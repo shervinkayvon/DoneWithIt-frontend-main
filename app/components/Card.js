@@ -1,7 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Image } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { Image } from "react-native-expo-image-cache";
 
 import colors from '../config/colors';
 
@@ -11,9 +10,9 @@ function Card({ title, subtitle, imageUrl, onPress, thumbnailUrl }) {
             <View style={styles.card}>
                 <Image 
                     style={styles.image} 
-                    preview={{ uri: thumbnailUrl }} 
-                    uri={imageUrl} 
-                    tint="light"
+                    source={{
+                        uri: imageUrl,
+                    }}
                 />
                 <View style={styles.detailsContainer}>
                     <Text style={styles.title}>{title}</Text>

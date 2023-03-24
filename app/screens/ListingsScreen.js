@@ -10,10 +10,10 @@ import ActivityIndicator from '../components/ActivityIndicator';
 import useApi from '../hooks/useApi';
 
 function ListingsScreen({ navigation }) {
-    const { data: listings, error, loading, request: loadListings} = useApi();
+    const { data: listings, error, loading, request: getRequest} = useApi();
 
     useEffect(() => {
-        loadListings(listingsApi.getListings);
+        getRequest(listingsApi.getListings);
     }, []);
 
     return (

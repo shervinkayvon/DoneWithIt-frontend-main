@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Image, StyleSheet, Text } from "react-native";
 import * as Yup from "yup";
 
 import Screen from '../components/Screen';
-import { AppForm, AppFormField, SubmitButton } from "../components/forms";
+import { AppForm, AppFormField, ErrorMessage, SubmitButton } from "../components/forms";
+import usersApi from '../api/users';
+import authApi from '../api/auth';
+import auth from '../api/auth';
+import ActivityIndicator from '../components/ActivityIndicator';
+import useApi from '../hooks/useApi';
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().required().label('Name'),
@@ -12,13 +17,44 @@ const validationSchema = Yup.object().shape({
 })
 
 function RegisterScreen(props) {
+    const registerApi = useApi();
+    const loginApi = useApi();
+    const [error, setError] = useState('');
+    const { logIn } = useAuth();
+
+    const handleSubmit = async userInfo => {
+        setError('');
+        const result = await registerApi.request(usersApi.register, userInfo);
+
+        if (!result.ok) {
+            if (result.data) setError(result.data.error);
+            else {
+                setError('An unexpected error occurred.');
+                console.log(result);
+            }
+            return;
+        }
+
+        try {
+            const { data: authToken } = await loginApi.request(authApi.login,
+                userInfo.email, 
+                userInfo.password
+            );
+            logIn(authToken);            
+        } catch (error) {
+            console.log('test');
+        }
+    }
+
     return (
         <Screen style={styles.container}>
+            <ActivityIndicator visible={registerApi.loading || loginApi.loading} />
             <AppForm
                 initialValues={{ name: '', email: '', password: ''}}
-                onSubmit={values => console.log(values)}
+                onSubmit={handleSubmit}
                 validationSchema={validationSchema}
-            >
+            >   
+                <ErrorMessage error={error} visible={!!error}/>
                 <AppFormField 
                     autoCorrect={false}
                     name="name"
