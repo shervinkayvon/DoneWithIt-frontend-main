@@ -49,6 +49,7 @@ import OfflineNotice from './app/components/OfflineNotice';
 import AuthContext from './app/auth/context';
 import authStorage from './app/auth/storage';
 import AppLoading from 'expo-app-loading';
+import * as Notifications from 'expo-notifications';
 
 export default function App() {
   const [user, setUser] = useState();
@@ -58,6 +59,16 @@ export default function App() {
     const user = await authStorage.getUser();
     if (user) setUser(user);
   }
+
+  // const showNotification = () => {
+  //   Notifications.presentNotificationAsync({
+  //     title: 'Poo',
+  //     body: 'more poo',
+  //     data: {
+  //       _displayInForeground: true
+  //     }
+  //   });
+  // }
 
   if (!isReady)
     return <AppLoading startAsync={restoreUser} onFinish={() => setIsReady(true)} onError={(error) => console.log(error)} />
